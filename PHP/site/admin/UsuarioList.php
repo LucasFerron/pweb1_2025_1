@@ -1,3 +1,6 @@
+<?php
+    include "./database.class.php"
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,24 +12,17 @@
     <title>Formulario de Usuário</title>
 </head>
 
-<?php
-if (!empty($_REQUEST)) {
-    /* echo $_GET['nome'];
-     echo $_GET['telefone'];
-     echo $_GET['email'];
-     echo $_GET['cpf'];*/
-    echo $_REQUEST['nome'] . "<br>";
-    echo $_REQUEST['telefone'] . "<br>";
-    echo $_REQUEST['email'] . "<br>";
-    echo $_REQUEST['cpf'] . "<br>";
-}
+<?php  
+$db = new db('usuario');
+
+$dados = $db->all();
 ?>
 
 <body>
 
     <div class="container">
         <div class="row">
-            <h3>Formulário Usuário</h3>
+            <h3>Listagem Usuário</h3>
 
             <form action="" method="post">
 
@@ -55,30 +51,26 @@ if (!empty($_REQUEST)) {
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">CPF</th>
+                        <th scope="col">Telefone</th>
+                        <th scope="col">Email</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>John</td>
-                        <td>Doe</td>
-                        <td>@social</td>
-                    </tr>
+                    <?php
+                        foreach($dados as $item){
+                            echo"
+                            <tr>
+                                <th scope='row'>$item->id</th>
+                                <td>$item->nome</td>
+                                <td>$item->cpf</td>
+                                <td>$item->telefone</td>
+                                <td>$item->email</td>
+                            </tr>
+                            ";
+                        }
+                    ?>
                 </tbody>
             </table>
 
