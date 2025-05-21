@@ -53,11 +53,12 @@ class db
         $sql = "INSERT INTO $this->table_name (";
         $flag = 0;
         $arrayDados = [];
+        
         foreach($dados as $campo =>$valor){
             if($flag ==0){
                 $sql .= "$campo";
             }else{
-                $sql .= "$campo";
+                $sql .= ",$campo";
             }
             $flag = 1;
         }
@@ -65,7 +66,7 @@ class db
         $flag = 0;
         foreach($dados as $campo =>$valor){
             if($flag ==0){
-                $sql .= ", ?";
+                $sql .= " ?";
             }else{
                 $sql .= ", ?";
             }
@@ -78,5 +79,69 @@ class db
         $st =$conn->prepare( $sql);
         $st->execute( $arrayDados);
     }
+
+    public function update($dados){
+        $id = $dados['id'];
+        $conn = $this->conn();
+
+        $sql = "UPDATE $this->table_name SET";
+        $flag = 0;
+        $arrayDados = [];
+
+        foreach($dados as $campo =>$valor){
+            if($flag ==0){
+                $sql .= "$campo = ?";
+            }else{
+                $sql .= ", $campo = ?";
+            }
+            $flag = 1;
+            $arrayDados[] = $valor;
+        }
+
+        $sql .="WHERE id = $id";                   
+        
+        $st =$conn->prepare( $sql);
+        $st->execute( $arrayDados);
+    }
+    public function find($id)
+    {
+        $conn = $this->conn(); //Cria o conn
+
+        $sql = "SELECT * FROM usuario WHERE id = ?";
+        
+        $st =$conn->prepare($sql);
+        $st->execute([$id]);
+
+        return $st->fetchObject();
+    }
+
+    public function destroy($id){
+        $conn = $this->conn();
+
+        $sql = "DELETE FROM $this->table_name WHERE id = ?";
+
+        $st = $conn->prepare($sql);
+        $st->execute([$id]);
+
+        return $st->fetchAll( PDO::FETCH_CLASS);
+
+        
+    }
+    public function search($dados){
+        $campo = $dados['tipo'];
+        $valor = $dados['valor'];
+
+        $conn = $this->conn();
+
+        $sql = "SELECT * FROM $this->table_name WHERE $campo LIKE ?";
+
+        $st = $conn->prepare($sql);
+        $st->execute(["%$valor%"]);
+
+        return $st->fetchAll( PDO::FETCH_CLASS);
+
+        
+    }
+
 }
 ?>

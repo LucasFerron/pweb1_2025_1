@@ -1,6 +1,6 @@
 <?php
-    include "./database.class.php"
-?>
+include "./database.class.php"
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,10 +12,17 @@
     <title>Formulario de Usuário</title>
 </head>
 
-<?php  
+<?php
 $db = new db('usuario');
 
-$dados = $db->all();
+if (!empty($_GET['id'])) {
+    $db->destroy($_GET['id']);
+}
+if (!empty($_POST)) {
+    $dados = $db->search($_POST);
+} else {
+    $dados = $db->all();
+}
 ?>
 
 <body>
@@ -24,17 +31,19 @@ $dados = $db->all();
         <div class="row">
             <h3>Listagem Usuário</h3>
 
-            <form action="" method="post">
+            <form action="./UsuarioList.php" method="post">
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <label for="" class="form-label">Nome</label>
-                        <input type="text" name="nome" class="form-control">
-                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="tipo">
+                            <option value="nome">Nome</option>
+                            <option value="cpf">CPF</option>
+                            <option value="telefone">Telefone</option>
 
+                        </select>
+                    </div>
                     <div class="col-md-6">
-                        <label for="" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control">
+                        <input type="text" name="valor" placeholder="pesquisar..." class="form-control">
                     </div>
 
                     <div class="row">
@@ -55,21 +64,35 @@ $dados = $db->all();
                         <th scope="col">CPF</th>
                         <th scope="col">Telefone</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Ação</th>
+                        <th scope="col">Ação</th>
+
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                        foreach($dados as $item){
-                            echo"
+                    foreach ($dados as $item) {
+                        echo "
                             <tr>
                                 <th scope='row'>$item->id</th>
                                 <td>$item->nome</td>
                                 <td>$item->cpf</td>
                                 <td>$item->telefone</td>
                                 <td>$item->email</td>
+                                <td>
+                                    <a
+                                        href='./UsuarioForm .php?id=$item->id'>Editar
+                                    </a>
+                                </td>
+                                <td>
+                                    <a
+                                        onclick='return confirm(\"Deseja Excluir?\")'
+                                        href='./UsuarioList.php?id=$item->id'>Deletar
+                                    </a>
+                                </td>
                             </tr>
                             ";
-                        }
+                    }
                     ?>
                 </tbody>
             </table>
